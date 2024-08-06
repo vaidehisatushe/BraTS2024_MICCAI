@@ -41,7 +41,7 @@ Project setup
 # Create Python environment and install MLCube Docker runner 
 virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker
 
-# Fetch the boston housing example from GitHub
+# Fetch the code from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
 git fetch origin pull/65/head:feature/getting_started && git checkout feature/getting_started
 cd ./getting_started/mlcube
