@@ -1,43 +1,17 @@
-Packing an existing project into MLCube
-In this tutorial we're going to use the Boston Housing Dataset. We'll take an existing implementation, create the needed files to pack it into MLCube® and execute all tasks.
+Important files
+These are the most important files on this project:
 
-Original project code
-At fist we have only 4 files, one for package dependencies and 3 scripts for each task: download data, preprocess data and train.
+├── mlcube
+│   ├── mlcube.yaml          # MLCube configuration, defines the project, author, platform, docker and tasks.
+│   └── workspace            # This folder is mounted at runtime. Note that it will be empty during fed. eval.
+│       ├── data             # For example some data can be put here during local testing.
+│       └── output           # Location where inference outputs are stored.
+└── project
+    ├── Dockerfile           # Docker file with instructions to create the image.
+    ├── BraTS-GoAT2024 NNUNet Model Complete Updated.py            # Python entrypoint used by MLCube, contains the logic for MLCube tasks.
+    ├── parameters.yaml      # File with parameters used by inference procedure.
+    ├── requirements.txt     # Python requirements needed to run the project inside Docker.
 
-├── project
-    ├── 01_download_dataset.py
-    ├── 02_preprocess_dataset.py
-    ├── 03_train.py
-    └── requirements.txt
-The most important thing that we need to remember about these scripts are the input and output parameters:
-
-01_download_dataset.py
---data_dir : Dataset download path, inside this folder path a new file called raw_dataset.txt will be created.
-
-02_preprocess_dataset.py
---input_file : Folder path containing raw dataset file.
-
---output_file : Output csv file containing the processed data.
-
-03_train.py
---dataset_file_path : Processed dataset file path. Note: this is the full path to the csv file.
-
---parameters_file : File containing parameters in yaml format.
-
-MLCube structure
-We'll need a couple of files for MLCube, first we'll need to create a folder called mlcube in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place)
-
-├── mlcube/
-│   ├── mlcube.yaml
-│   └── workspace/
-│       └── parameters.yaml
-└── project/
-    ├── 01_download_dataset.py
-    ├── 02_preprocess_dataset.py
-    ├── 03_train.py
-    ├── requirements.txt
-    └── Dockerfile
-In the following steps we'll describe each file.
 
 Dockerize the project
 We'll create a Dockerfile with the needed steps to run the project, at the end we'll need to define the execution of the mlcube.py file as the entrypoint. This file will be located in project/Dockerfile.
