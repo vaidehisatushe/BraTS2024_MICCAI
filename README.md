@@ -45,38 +45,4 @@ virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-d
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
 git fetch origin pull/65/head:feature/getting_started && git checkout feature/getting_started
 cd ./getting_started/mlcube
-Dataset
-The Boston Housing Dataset will be downloaded and processed. Sizes of the dataset in each step:
 
-Dataset Step	MLCube Task	Format	Size
-Downlaod (Compressed dataset)	download_data	txt file	~52 KB
-Preprocess (Processed dataset)	preprocess_data	csv file	~40 KB
-Total	(After all tasks)	All	~92 KB
-Tasks execution
-# Download Boston housing dataset. Default path = /workspace/data
-# To override it, use data_dir=DATA_DIR
-mlcube run --task download_data
-
-# Preprocess Boston housing dataset, this will convert raw .txt data to .csv format
-# It will use the data from the DATA_DIR path defined in the previous step
-mlcube run --task preprocess_data
-
-# Run training.
-# Parameters to override: dataset_file_path=DATASET_FILE_PATH parameters_file=PATH_TO_TRAINING_PARAMS
-mlcube run --task train
-To execute all pipeline with one single command, use this:
-
-mlcube run --task=download_data,preprocess_data,train
-MLCube Command
-We are targeting pull-type installation, so MLCube images should be available on docker hub. If not, try this:
-
-mlcube run ... -Pdocker.build_strategy=always
-Parameters defined in mlcube.yaml can be overridden using: param=input, example:
-
-mlcube run --task=download_data data_dir=absolute_path_to_custom_dir
-Also, users can override the workspace directory by using:
-
-mlcube run --task=download_data --workspace=absolute_path_to_custom_dir
-Note: Sometimes, overriding the workspace path could fail for some task, this is because the input parameter parameters_file should be specified, to solve this use:
-
-mlcube run --task=train --workspace=absolute_path_to_cus
