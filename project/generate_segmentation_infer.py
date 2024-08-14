@@ -20,7 +20,8 @@ def infer(data_path, output_path):
     for validation_folder in validation_folders:
         # Assuming the training segmentation file has the same name as the validation folder
         validation_images = load_images(os.path.join(data_path, validation_folder))
-        segmentation_image = load_segmentation(os.path.join(data_path, f"{validation_folder}-seg.nii.gz"))
+        # Predict the segmentation using the loaded model
+        predicted_segmentation = predict_segmentation(model, validation_images)
 
         # Define the desired affine matrix
         desired_affine = np.array([
@@ -30,14 +31,15 @@ def infer(data_path, output_path):
             [0, 0, 0, 1]
         ])
 
-        seg_save_path = os.path.join(output_path, f"{validation_folder}-seg.nii.gz")
-        save_segmentation(segmentation_image, desired_affine, seg_save_path)
+        # Save the predicted segmentation
+        seg_save_path = os.path.join(output_path, f"{validation_folder}-pred-seg.nii.gz")
+        save_segmentation(predicted_segmentation, desired_affine, seg_save_path)
 
-        # Load and print shape and origin of the saved segmented image
-        corrected_segmentation_image_nib = nib.load(seg_save_path)
+        # Load and print shape and origin of the saved predicted segmentation image
+        predicted_segmentation_image_nib = nib.load(seg_save_path)
         print(f"Validation Folder: {validation_folder}")
-        print(f"Shape of corrected segmented image: {corrected_segmentation_image_nib.shape}")
-        print(f"Affine of corrected segmented image: \n{corrected_segmentation_image_nib.affine}")
+        print(f"Shape of predicted segmented image: {predicted_segmentation_image_nib.shape}")
+        print(f"Affine of predicted segmented image: \n{predicted_segmentation_image_nib.affine}")
 
         # Visualization
         fig, ax = plt.subplots(nrows=1, ncols=5, figsize=(25, 5))
@@ -45,7 +47,8 @@ def infer(data_path, output_path):
             ax[i].imshow(validation_images[key][:, :, 75], cmap='gray')
             ax[i].set_title(f"{validation_folder} - {key}")
             ax[i].axis('off')
-        ax[4].imshow(segmentation_image[:, :, 75], cmap='gray')
+        ax[4].imshow(predicted_segmentation[:, :, 75], cmap='gray')
+        ax[4].set_title(f"{validation_folder} - Pred Segmentation")
         ax[4].axis('off')
         plt.tight_layout()
         plt.show()
