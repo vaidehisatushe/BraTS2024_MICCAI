@@ -57,3 +57,4 @@ Werkzeug
 wrapt
 scikit-image
 nilearn
+typer 

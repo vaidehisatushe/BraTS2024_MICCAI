@@ -15,7 +15,6 @@ docker:
   build_file: "Dockerfile"
 
 tasks:
-  infer:
   # Computes predictions on input data
     parameters: 
       inputs: {
@@ -24,6 +23,6 @@ tasks:
         # Feel free to include other files required for inference.
         # These files MUST go inside the additional_files path.
         # e.g. model weights
-        weights: mlcube/workspace/additional_files/brain_segmentation_model .h5,
+        weights: additional_files/brain_segmentation_model.h5,
         }
       outputs: {output_path: {type: directory, default: predictions}}

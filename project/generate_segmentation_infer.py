@@ -1,18 +1,26 @@
-# infer.py
-
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import nibabel as nib
 from data_loader import load_images, load_segmentation, save_segmentation
 from model import load_model, predict_segmentation
 
-def infer(validation_base_dir, training_base_dir, save_dir, folder_mapping):
-    ensure_directory_exists(save_dir)
+
+def ensure_directory_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+def infer(data_path, output_path):
+    ensure_directory_exists(output_path)
     model = load_model()
 
-    for validation_folder, training_folder in folder_mapping.items():
-        validation_images = load_images(validation_base_dir, validation_folder)
-        segmentation_image = load_segmentation(os.path.join(training_base_dir, f"{training_folder}-seg.nii.gz"))
+    # List all validation folders in the data_path
+    validation_folders = sorted(os.listdir(data_path))
+
+    for validation_folder in validation_folders:
+        # Assuming the training segmentation file has the same name as the validation folder
+        validation_images = load_images(os.path.join(data_path, validation_folder))
+        segmentation_image = load_segmentation(os.path.join(data_path, f"{validation_folder}-seg.nii.gz"))
 
         # Define the desired affine matrix
         desired_affine = np.array([
@@ -22,7 +30,7 @@ def infer(validation_base_dir, training_base_dir, save_dir, folder_mapping):
             [0, 0, 0, 1]
         ])
 
-        seg_save_path = os.path.join(save_dir, f"{validation_folder}-seg.nii.gz")
+        seg_save_path = os.path.join(output_path, f"{validation_folder}-seg.nii.gz")
         save_segmentation(segmentation_image, desired_affine, seg_save_path)
 
         # Load and print shape and origin of the saved segmented image
@@ -41,3 +49,9 @@ def infer(validation_base_dir, training_base_dir, save_dir, folder_mapping):
         ax[4].axis('off')
         plt.tight_layout()
         plt.show()
+
+if __name__ == "__main__":
+    data_path = "pseudo_val_set"
+    output_path = "pseudo_val_output"
+
+    infer(data_path, output_path)
